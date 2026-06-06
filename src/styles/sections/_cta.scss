@@ -67,9 +67,9 @@
   }
 
   @include respond-to('lg') {
-    --margin-block-title: 0 10px;
-    --margin-block-description: 10px 25px;
-    --margin-block-button: 25px 0px;
+    --margin-block-title: 0 20px;
+    --margin-block-description: 20px 50px;
+    --margin-block-button: 50px 0px;
     --display-img-wrapper: block;
     --padding-block: 0px;
     --grid-column-description: 1/9;
