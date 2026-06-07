@@ -19,6 +19,7 @@
 
   &__content {
     align-items: center;
+    position: static;
   }
 
   &__text-wrapper {
@@ -26,6 +27,8 @@
   }
 
   &__image-wrapper {
+    position: absolute;
+    left: 0px;
     display: var(--display-img-wrapper);
     grid-column: var(--grid-column-image-wrapper);
     grid-column: 1/6;
@@ -79,6 +82,7 @@
 
     &__content {
       padding: 0;
+      height: var(--height-image-wrapper);
     }
   }
 }
