@@ -4,6 +4,10 @@
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 
+  &__body {
+    background-color: var(--color-bg-main);
+  }
+
   &__menu-wrapper {
     position: fixed;
     z-index: 100;
