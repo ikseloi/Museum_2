@@ -71,6 +71,7 @@
 
     &-address {
       font-style: normal;
+      @extend %hover-underline;
     }
   }
 

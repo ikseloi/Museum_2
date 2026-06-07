@@ -18,8 +18,8 @@
   background-color: var(--color-bg-accent);
 
   &__content {
-    align-items: center;
     position: static;
+    align-items: center;
   }
 
   &__text-wrapper {
@@ -28,7 +28,8 @@
 
   &__image-wrapper {
     position: absolute;
-    left: 0px;
+    left: 0;
+
     display: var(--display-img-wrapper);
     grid-column: var(--grid-column-image-wrapper);
     grid-column: 1/6;
@@ -81,8 +82,8 @@
     --width-description: 470px;
 
     &__content {
-      padding: 0;
       height: var(--height-image-wrapper);
+      padding: 0;
     }
   }
 }
