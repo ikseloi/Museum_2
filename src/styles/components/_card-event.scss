@@ -41,10 +41,11 @@
   @include respond-to('md') {
     --margin-block-content-time: 0 10px;
     --margin-block-content-description: 20px 50px;
-    --width-description: 570px;
+    --width-description: 330px;
   }
 
   @include respond-to('lg') {
     --width-button: 270px;
+    --width-description: 570px;
   }
 }
