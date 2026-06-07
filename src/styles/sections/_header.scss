@@ -45,6 +45,6 @@
   }
 
   @include respond-to('lg') {
-    --padding-block: 26px;
+    --padding-block: 26px 27px;
   }
 }
