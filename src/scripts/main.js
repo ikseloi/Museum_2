@@ -1,4 +1,10 @@
-import { getInitialLocale, fetchTranslations, updateDOM } from './i18n.js';
+import {
+  getInitialLocale,
+  fetchTranslations,
+  updateDOM,
+  STORAGE_KEY,
+} from './i18n.js';
+
 import { checkMuseumStatus } from './museum-status.js';
 import { initCurrentYear } from './utils/_year.js';
 import { initLangSelectDropdown } from './components/_lang-select.js';
@@ -6,18 +12,20 @@ import { initMobileMenu } from './components/_menu.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   let currentLocale = getInitialLocale();
+  let currentTranslations = null;
+
+  const summary = document.querySelector('.lang-select__summary');
+  const infoScheduleToday = document.getElementById('info-schedule-today');
 
   // Update language selection interface (UA/EN)
   const updateLangSelectUI = (locale) => {
-    document.querySelectorAll('.lang-select__summary').forEach((summary) => {
+    if (summary) {
       summary.textContent = locale.toUpperCase();
-    });
+    }
   };
 
   const updateMuseumStatus = (translations) => {
-    const infoScheduleToday = document.getElementById('info-schedule-today');
-
-    if (!infoScheduleToday) {
+    if (!infoScheduleToday || !translations) {
       return;
     }
 
@@ -25,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (status.isOpen && status.schedule) {
       infoScheduleToday.textContent = status.schedule;
-    } else if (translations?.status?.closed) {
+    } else {
       infoScheduleToday.textContent = translations.status.closed.toUpperCase();
     }
   };
@@ -33,15 +41,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const changeLanguage = async (locale) => {
     const translations = await fetchTranslations(locale);
 
-    if (translations) {
-      currentLocale = locale;
-      window.localStorage.setItem('museum-language', locale);
-      document.documentElement.setAttribute('lang', locale);
-
-      updateDOM(translations);
-      updateLangSelectUI(locale);
-      updateMuseumStatus(translations);
+    if (!translations) {
+      return;
     }
+
+    currentLocale = locale;
+    currentTranslations = translations;
+
+    document.documentElement.lang = locale;
+    window.localStorage.setItem(STORAGE_KEY, locale);
+
+    updateDOM(translations);
+    updateLangSelectUI(locale);
+    updateMuseumStatus(translations);
   };
 
   // --- Initialize base UI components and utilities ---
@@ -54,24 +66,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Attach language change events to links (.lang-select__option)
   document.querySelectorAll('.lang-select__option').forEach((option) => {
-    option.addEventListener('click', (event) => {
+    option.addEventListener('click', async (event) => {
       event.preventDefault();
 
-      const selectedLang = event.target.textContent.trim().toLowerCase();
+      const locale = event.currentTarget.dataset.lang;
 
-      if (selectedLang === 'ua' && currentLocale !== 'uk') {
-        changeLanguage('uk');
-      } else if (selectedLang === 'en' && currentLocale !== 'en') {
-        changeLanguage('en');
+      if (locale && locale !== currentLocale) {
+        await changeLanguage(locale);
       }
     });
   });
 
   // Update museum status every minute (to check if it has closed)
-  setInterval(async () => {
-    const activeLocale = window.localStorage.getItem('museum-language') || 'uk';
-    const translations = await fetchTranslations(activeLocale);
-
-    updateMuseumStatus(translations);
-  }, 60000);
+  setInterval(() => updateMuseumStatus(currentTranslations), 60000);
 });

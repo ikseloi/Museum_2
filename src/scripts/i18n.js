@@ -1,6 +1,7 @@
-const STORAGE_KEY = 'museum-language';
+export const STORAGE_KEY = 'museum-language';
+
 const DEFAULT_LOCALE = 'uk';
-const SUPPORTED_LOCALES = ['uk', 'en'];
+const SUPPORTED_LOCALES = Object.freeze(['uk', 'en']);
 
 export const getInitialLocale = () => {
   const savedLocale = window.localStorage.getItem(STORAGE_KEY);
@@ -23,17 +24,17 @@ export const fetchTranslations = async (locale) => {
     const response = await fetch(`locales/${locale}.json`);
 
     if (!response.ok) {
-      throw new Error(`${locale} is not found`);
+      return null;
     }
 
     return await response.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 };
 
 const getValueByPath = (obj, path) => {
-  return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+  return path.split('.').reduce((acc, key) => acc?.[key], obj);
 };
 
 export const updateDOM = (translations) => {
